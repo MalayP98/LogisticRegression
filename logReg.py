@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import maths
+import math
 
 from sklearn.datasets import load_breast_cancer
 from sklearn.feature_selection import SelectKBest
@@ -25,6 +25,7 @@ class FeatureScaling:
 
 
 class LogisticRegression:
+    pass
 
 
 
