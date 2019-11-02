@@ -1,9 +1,31 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
-x = np.arange(-4, 4, 1)
-y = x*x
+from sklearn.datasets import load_breast_cancer
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
 
-plt.scatter(x,y)
-plt.show()
+dataset = load_breast_cancer()
+
+x = dataset.data
+y = dataset.target
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
