@@ -5,9 +5,7 @@ import math
 from sklearn.datasets import load_breast_cancer
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
-
-def findMin(data):
-    return min(data)
+from sklearn import preprocessing
 
 dataset = load_breast_cancer()
 
@@ -15,34 +13,30 @@ x = dataset.data
 y = dataset.target
 
 class FeatureScaling:
-    def __init__(self, data, type='Standardization'):
-        if type=='Normalization':
-            return (data - data.min())/(data.max()-data.min())
-        elif type == 'Standardization':
-            return (data-data.mean())
+    def __init__(self, data, type='Normalization'):
+        self.data = data
+        self.type = type
 
+    def Scaling(self):
 
+        if self.type == 'Normalization':
+            for i in range(0, self.data.shape[1]):
+                self.data[:, i] = (self.data[:, i] - min(self.data[:, i])) / (
+                            max(self.data[:, i]) - min(self.data[:, i]))
+            return self.data
+
+        elif self.type == 'Standardization':
+            for i in range(0, self.data.shape[1]):
+                self.data[:, i] = (self.data[:, i] - np.mean(self.data[:,i])) / (np.var(self.data[:, i]))
+            return self.data
+
+        elif self.type == 'Mean_Normalization':
+            for i in range(0, self.data.shape[1]):
+                self.data[:, i] = (self.data[:, i] - np.mean(self.data[:,i])) / (
+                            max(self.data[:, i]) - min(self.data[:, i]))
+            return self.data
 
 
 class LogisticRegression:
-    pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def __init__(self):
+        pass
