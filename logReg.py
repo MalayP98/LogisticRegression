@@ -1,7 +1,4 @@
 import numpy as np
-import pandas as pd
-import math
-
 from sklearn.datasets import load_breast_cancer
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
@@ -11,11 +8,40 @@ dataset = load_breast_cancer()
 
 x = dataset.data
 y = dataset.target
+y = y.reshape(y.shape[0], 1)
 
+
+def confusion_matrix(input, target):
+    true_positive = 0
+    true_negative = 0
+    flase_positive = 0
+    flase_negative = 0
+    for i in range(input.shape[0]):
+        if input[i] >= 0.5:
+            input[i] = 1
+        else:
+            input[i] = 0
+
+    for i in range(target.shape[0]):
+        if input[i] == target[i]:
+            if input[i] == 1:
+                true_positive += 1
+            else:
+                true_negative += 1
+        elif input[i] != target[i]:
+            if input[i] == 0:
+                flase_negative += 1
+            else:
+                flase_positive += 1
+    print("Confusion Matrix: ", np.array([[true_positive,flase_positive],[flase_negative, true_negative]]))
+    print("True Positive = ", true_positive)
+    print("False Positive = ", flase_positive)
+    print("True Negative = ", true_negative)
+    print("False Negative = ", flase_negative)
 
 def train_test_split(input, target, ratio):
     shuffle_indices = np.random.permutation(input.shape[0])
-    test_size = int(input.shape[0]*ratio)
+    test_size = int(input.shape[0] * ratio)
     train_indices = shuffle_indices[:test_size]
     test_indices = shuffle_indices[test_size:]
     xTrain = input[train_indices]
@@ -56,26 +82,19 @@ class LogisticRegression:
         self.learning_rate = learning_rate
         self.theta = np.random.rand(self.data.shape[1] + 1, 1)
         self.data = np.c_[np.ones((self.data.shape[0], 1)), self.data]
-        print(self.theta, self.data)
 
     def sigmoid(self, z):
-        return 1/(1+np.exp(-z))
-
+        return 1 / (1 + np.exp(-z))
 
     def linear_function(self):
         self.output = np.dot(self.data, self.theta)
-        print(self.output)
         return self.output
 
-    def train(self, target):
-        for i in range(0,1000):
+    def train(self, target, iteration):
+        for i in range(0, iteration):
             self.error = self.sigmoid(self.linear_function()) - target
-            """print("sigmoid o/p is \n",self.sigmoid(self.linear_function()))"""
             self.gradient = (np.dot(self.error.T, self.data)).T
-            self.theta = self.theta - self.gradient*self.learning_rate
-            """print("error \n", self.error)
-            print("gradient \n", self.gradient)
-            print("theta \n", self.theta)"""
+            self.theta = self.theta - (self.gradient * self.learning_rate)
         print("FINAL")
         print("error \n", self.error)
         print("gradient \n", self.gradient)
@@ -83,28 +102,19 @@ class LogisticRegression:
 
     def predict(self, input):
         print("Predicted values are...")
+        input = np.c_[np.ones((input.shape[0], 1)), input]
+        print(input.shape, self.theta.shape)
         return self.sigmoid(np.dot(input, self.theta))
         print(self.sigmoid(np.dot(input(), self.theta)))
 
 
-
-"""xTest = np.array([[0,0],[0,1],[1,0],[1,1]])
-target = np.array([[0],[0],[0],[1]])
-obj = LogisticRegression(xTest,0.1)
-obj.train(target)
-obj.predict(xTest)"""
-
-featureScaling = FeatureScaling(x, type = 'Normalization')
+featureScaling = FeatureScaling(x, type='Normalization')
 x = featureScaling.Scaling()
 
-xTrain, yTrain, xTest, yTest = train_test_split(x,y,0.8)
+xTrain, yTrain, xTest, yTest = train_test_split(x, y, 0.8)
 
 logistic = LogisticRegression(xTrain, 0.1)
-logistic.train(yTrain)
+logistic.train(yTrain, 1000)
 
 pred = logistic.predict(xTest)
-
-
-
-
-
+confusion_matrix(pred, yTest)
