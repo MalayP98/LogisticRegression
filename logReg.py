@@ -44,13 +44,35 @@ class LogisticRegression:
         self.learning_rate = learning_rate
         self.theta = np.random.rand(self.data.shape[1] + 1, 1)
         self.data = np.c_[np.ones((self.data.shape[0], 1)), self.data]
+        print(self.theta, self.data)
 
-    def sigmoid(self):
-        pass
+    def sigmoid(self, z):
+        return 1/(1+np.exp(-z))
 
-    def linear_function(self, instance):
-        self.output = np.dot(self.data[instance], self.theta)
+
+    def linear_function(self):
+        self.output = np.dot(self.data, self.theta)
+        print(self.output)
         return self.output
+
+    def train(self, target):
+        for i in range(0,50):
+            self.error = self.sigmoid(self.linear_function()) - target
+            """print("sigmoid o/p is \n",self.sigmoid(self.linear_function()))"""
+            self.gradient = (np.dot(self.error.T, self.data)).T
+            self.theta = self.theta - self.gradient*self.learning_rate
+            """print("error \n", self.error)
+            print("gradient \n", self.gradient)
+            print("theta \n", self.theta)"""
+
+
+
+xTest = np.array([[0,0],[0,1],[1,0],[1,1]])
+target = np.array([[0],[0],[0],[1]])
+obj = LogisticRegression(xTest,0.01)
+obj.train(target)
+
+
 
 
 
